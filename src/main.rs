@@ -1,5 +1,6 @@
 
 fn main() {
+    use meval::eval_str;
     use graplot::Plot3D;
     use std::io::{stdin,stdout,Write};
     let mut foft=String::new();
@@ -32,44 +33,35 @@ fn main() {
     if let Some('\r')=hoft.chars().next_back() {
         hoft.pop();
     }
-
-    let xs = [0.,1.,2.,3.,4.,5.,6.];
-    let ys = [0.,1.,4.,9.,16.,25.,36.];
-    let zs = [0.,1.,4.,9.,16.,25.,36.];
+    //set vales for xs
+    let mut xs = [0.,0.,0.,0.,0.,0.,0.];
+    let mut ys = [0.,0.,0.,0.,0.,0.,0.];
+    let mut zs = [0.,0.,0.,0.,0.,0.,0.];
+    for n in 0..6 {
+        let mut newfoft=foft.clone();
+        let mut newgoft=goft.clone();
+        let mut newhoft=hoft.clone();
+        newfoft = newfoft.replace("t", &n.to_string());
+        newgoft = newgoft.replace("t", &n.to_string());
+        newhoft = newhoft.replace("t", &n.to_string());
+        let finalf = meval::eval_str("newfoft").unwrap();
+        let finalg = meval::eval_str("newgoft").unwrap();
+        let finalh = meval::eval_str("newhoft").unwrap();
+        let myx = newfoft.parse::<i32>().unwrap();
+        let myy = newgoft.parse::<i32>().unwrap();
+        let myz = newhoft.parse::<i32>().unwrap();
+        xs[n]=myx as f64;
+        ys[n]=myy as f64;
+        zs[n]=myz as f64;
+        //why does cos or sin or tan not work?
+    }
     let plot = Plot3D::new((xs, ys, zs, "r-o"));
     plot.show();
 }
 
-
-/* 
-fn main() {
-    let graph = Graph::new();
-let input_node = graph.source(41);
-let output_node = input_node.clone().map(|x| x * x).shared();
-assert_eq!(1681, output_node.get());
-
-let t = thread::spawn({
-    let input_node = input_node.clone();
-    let output_node = output_node.clone();
-    move || {
-        input_node.update(|n| {
-            *n += 1;
-            true
-        });
-
-        output_node.get()
-    }
-});
-
-assert_eq!(1764, t.join().unwrap());
-
-input_node.update(|n| {
-    *n += 1;
-    true
-});
-
-assert_eq!(1849, output_node.get());
+/*
+fn leanbender(i: &mut usize, x: &mut [usize]) {
+    x[*i] += 1;
+    *i += 1;
 }
 */
-
-

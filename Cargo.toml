@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 graplot = "0.1.21"
+meval = "0.2"
