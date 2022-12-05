@@ -37,6 +37,8 @@ fn main() {
     let mut xs = [0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.];
     let mut ys = [0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.];
     let mut zs = [0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.];
+    //now need to add user input to specify the bounds of the graph
+    //and need to add ability to set bounds between
     for n in 0..14 {
         let mut m = n as i64;
         m = m - 6;
