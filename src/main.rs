@@ -1,5 +1,7 @@
 fn main() {
     use graplot::Plot3D;
+    //add ability to change the bounds of the graph
+    //you can't do 3 cos(&t&) because you have to explicetly identify the multiplicaitona dna division that takes place
     use std::io::{stdin,stdout,Write};
     let mut foft=String::new();
     print!("Please enter the x component of some vector-valued function in the form (x(&t&))  ex: (3cos(&t&)): ");
