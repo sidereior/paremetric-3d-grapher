@@ -52,6 +52,8 @@ fn main() {
     let mut xs = vec![0.; numUsize];
     let mut ys = vec![0.; numUsize];
     let mut zs = vec![0.; numUsize];
+    
+    
     //now need to add user input to specify the bounds of the graph
     //and need to add ability to set bounds between
     //lowest smoothing curve or just some way to generate splines between areas
@@ -69,17 +71,26 @@ fn main() {
         let myz = meval::eval_str(newhoft).unwrap();
         xs[n as usize]=myx as f64;
         ys[n as usize]=myy as f64;
-        zs[n as uszie]=myz as f64;
+        zs[n as usize]=myz as f64;
+        
         //why does cos or sin or tan not work
     }
     //then use the points to produce lowest smoothing curves between points
-    let mut fts = [0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.];
-    let mut gts = [0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.];
-    let mut hts = [0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.];
+    let mut fts = xs.try_into().unwrap();
+    let mut gts = ys.try_into().unwrap();
+    let mut hts = zs.try_into().unwrap();
     let plot = Plot3D::new((xs, ys, zs, "r-o"));
     plot.show();
 }
 
+
+fn vector_to_array<T: Clone>(vec: &Vec<T>) -> [T; N] {
+    let mut arr = [T::default(); N]; 
+    for (i, item) in vec.iter().enumerate() {
+        arr[i] = item.clone();
+    }
+    arr
+}
 /*
 fn leanbender(i: &mut usize, x: &mut [usize]) {
     x[*i] += 1;
