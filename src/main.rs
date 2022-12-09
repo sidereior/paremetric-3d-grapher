@@ -1,3 +1,5 @@
+use std::convert::TryInto;
+use std::mem;
 fn main() {
     use graplot::Plot3D;
     //add ability to change the bounds of the graph
@@ -72,28 +74,36 @@ fn main() {
         xs[n as usize]=myx as f64;
         ys[n as usize]=myy as f64;
         zs[n as usize]=myz as f64;
-        
         //why does cos or sin or tan not work
     }
     //then use the points to produce lowest smoothing curves between points
-    let mut fts = xs.try_into().unwrap();
-    let mut gts = ys.try_into().unwrap();
-    let mut hts = zs.try_into().unwrap();
-    let plot = Plot3D::new((xs, ys, zs, "r-o"));
+    //WHAT IS TYPE ANNOTATIONS NEEDED?
+    let mut fts = vector_to_array(xs);
+    let mut gts = vector_to_array(ys);
+    let mut hts = vector_to_array(zs);
+    let plot = Plot3D::new((fts, gts, hts, "r-o"));
     plot.show();
 }
 
-
-fn vector_to_array<T: Clone>(vec: &Vec<T>) -> [T; N] {
-    let mut arr = [T::default(); N]; 
-    for (i, item) in vec.iter().enumerate() {
-        arr[i] = item.clone();
+fn convert_vec_to_array<T: Copy>(vec: Vec<T>, size: usize) -> [T; size] {
+    let mut array: [T; size] = unsafe { mem::uninitialized() };
+    for (i, item) in vec.into_iter().enumerate() {
+        array[i] = item;
     }
-    arr
+    array
 }
-/*
-fn leanbender(i: &mut usize, x: &mut [usize]) {
-    x[*i] += 1;
-    *i += 1;
+
+
+fn vector_to_array<T, const N: usize>(v: Vec<T>) -> [T; N] {
+    v.try_into()
+        .unwrap_or_else(|v: Vec<T>| panic!("Expected a Vec of length {} but it was {}", N, v.len()))
 }
-*/
+
+fn cast_vec<T, U>(vec: Vec<T>) -> Vec<U> {
+    unsafe {
+        let vec_ptr = vec.as_mut_ptr();
+        let vec_len = vec.len();
+        let vec_cap = vec.capacity();
+        Vec::from_raw_parts(vec_ptr as *mut U, vec_len, vec_cap)
+    }
+}
