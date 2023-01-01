@@ -1,5 +1,6 @@
 use std::convert::TryInto;
-use std::mem;
+const SIZE: usize = 10;
+
 fn main() {
     use graplot::Plot3D;
     //add ability to change the bounds of the graph
@@ -54,6 +55,7 @@ fn main() {
     let mut xs = vec![0.; numUsize];
     let mut ys = vec![0.; numUsize];
     let mut zs = vec![0.; numUsize];
+    SIZE = numUsize;
     
     
     //now need to add user input to specify the bounds of the graph
@@ -78,19 +80,38 @@ fn main() {
     }
     //then use the points to produce lowest smoothing curves between points
     //WHAT IS TYPE ANNOTATIONS NEEDED?
-    let mut fts = vector_to_array(xs);
-    let mut gts = vector_to_array(ys);
-    let mut hts = vector_to_array(zs);
+    let mut fts = xs.to_array();
+    let mut gts = convert_vec_to_array(ys, SIZE);
+    let mut hts = convert_vec_to_array(zs, SIZE);
+
+
     let plot = Plot3D::new((fts, gts, hts, "r-o"));
     plot.show();
 }
 
 fn convert_vec_to_array<T: Copy>(vec: Vec<T>, size: usize) -> [T; size] {
-    let mut array: [T; size] = unsafe { mem::uninitialized() };
-    for (i, item) in vec.into_iter().enumerate() {
-        array[i] = item;
+    let mut array = [T::default(); size];
+    //must be a better way to do this
+    for (index, item) in vec.iter().enumerate() {
+        array[index] = *item;
     }
     array
+}
+
+macro_rules! convert_vec_to_array {
+    ($container:ident, $size:expr) => {{
+    if $container.len() != $size {
+            None
+    } else {
+        use std::mem;
+        let mut arr : [_; $size] = unsafe { mem::uninitialized() };
+        for element in $container.into_iter().enumerate() {
+            let old_val = mem::replace(&mut arr[element.0],element.1);
+            unsafe { mem::forget(old_val) };
+        }
+        Some(arr)
+        }
+    }};
 }
 
 
