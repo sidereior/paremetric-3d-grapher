@@ -83,8 +83,6 @@ fn main() {
     let mut fts = xs.to_array();
     let mut gts = convert_vec_to_array(ys, SIZE);
     let mut hts = convert_vec_to_array(zs, SIZE);
-
-
     let plot = Plot3D::new((fts, gts, hts, "r-o"));
     plot.show();
 }
